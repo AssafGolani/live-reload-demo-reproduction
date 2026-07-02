@@ -1,7 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, HostListener, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-// EDIT THIS during the demo (e.g. 'v1' -> 'v2') to trigger a rebuild
+// EDIT THIS during the demo (e.g. 'v1' -> 'v2') to trigger a live-reload
 const DEMO_MARKER = 'v1';
 
 @Component({
@@ -16,6 +16,20 @@ export class App {
   protected readonly demoMarker = DEMO_MARKER;
   protected readonly bootstrappedAt = new Date().toLocaleTimeString();
   protected readonly hasNavigationApi = 'navigation' in window;
+  // 'auto' = browser restores scroll on reload; withExperimentalPlatformNavigation
+  // leans on this native restoration instead of Angular's withInMemoryScrolling.
+  protected readonly scrollRestoration = history.scrollRestoration;
+
+  // Live scroll position, so the audience can watch where the page lands after a reload.
+  protected readonly scrollY = signal(0);
+
+  // Tall content so there is a real scroll offset to (fail to) restore.
+  protected readonly sections = Array.from({ length: 12 }, (_, i) => i);
+
+  @HostListener('window:scroll')
+  protected onScroll() {
+    this.scrollY.set(Math.round(window.scrollY));
+  }
 
   constructor() {
     // ============================================================================

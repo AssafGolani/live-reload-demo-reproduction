@@ -4,11 +4,20 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Live demo steps
 
-Demo of the live-reload behavior with `withExperimentalPlatformNavigation`:
+`withExperimentalPlatformNavigation()` makes the router delegate **scroll and focus
+restoration to the browser's native Navigation API** instead of Angular's
+`withInMemoryScrolling`. The gotcha: when the dev server live-reloads (a full page reload),
+the browser attempts to restore your scroll position *before* Angular has re-rendered the
+page, so the scroll behavior differs from a plain History-API build.
+
+The home page is a tall, scrollable surface with a fixed HUD showing the bootstrap time,
+the current `Scroll Y`, `history.scrollRestoration`, and whether the Navigation API is
+available — so the behavior is visible on a projector.
 
 1. Run `npm start` (`ng serve --live-reload=true`) and open `http://localhost:4200` in a Chromium browser (the Navigation API is Chromium-only).
-2. Edit `DEMO_MARKER` in `src/app/app.ts` (e.g. `'v1'` → `'v2'`) and save — the page shows the marker and the bootstrap time, so you can see whether live-reload actually reloaded the app.
-3. Comment out `withExperimentalPlatformNavigation()` in `src/app/app.config.ts`, reload the page manually, then repeat step 2 and compare.
+2. Scroll down to one of the coloured bands and note the **Scroll Y** readout in the HUD.
+3. Edit `DEMO_MARKER` in `src/app/app.ts` (e.g. `'v1'` → `'v2'`) and save to trigger a live-reload. Watch where the page lands and whether **Bootstrapped at** changed.
+4. Comment out `withExperimentalPlatformNavigation()` in `src/app/app.config.ts`, repeat, and compare the scroll behavior between the two builds.
 
 ## Development server
 

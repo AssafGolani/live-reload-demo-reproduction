@@ -1,50 +1,63 @@
-<main class="demo">
+<!-- Fixed HUD so the audience can watch these values while the page scrolls / reloads -->
+<header class="hud">
   <h1>Live-reload demo — <code>withExperimentalPlatformNavigation</code></h1>
-
-  <section class="signals">
-    <div class="signal">
-      <span class="label">App bootstrapped at</span>
-      <span class="value">{{ bootstrappedAt }}</span>
-      <span class="hint">If live-reload really reloaded the app, this time changes.</span>
+  <dl class="readouts">
+    <div>
+      <dt>Bootstrapped at</dt>
+      <dd>{{ bootstrappedAt }}</dd>
     </div>
-    <div class="signal">
-      <span class="label">Demo marker</span>
-      <span class="value marker">{{ demoMarker }}</span>
-      <span class="hint">Edit <code>DEMO_MARKER</code> in <code>src/app/app.ts</code> and save.</span>
+    <div>
+      <dt>Marker</dt>
+      <dd class="marker">{{ demoMarker }}</dd>
     </div>
-    <div class="signal">
-      <span class="label">Navigation API in this browser</span>
-      <span class="value" [class.ok]="hasNavigationApi" [class.missing]="!hasNavigationApi">
+    <div>
+      <dt>Scroll Y</dt>
+      <dd class="scroll" data-testid="scrollY">{{ scrollY() }}px</dd>
+    </div>
+    <div>
+      <dt>history.scrollRestoration</dt>
+      <dd>{{ scrollRestoration }}</dd>
+    </div>
+    <div>
+      <dt>Navigation API</dt>
+      <dd [class.ok]="hasNavigationApi" [class.missing]="!hasNavigationApi">
         {{ hasNavigationApi ? 'available' : 'not available' }}
-      </span>
-      <span class="hint">
-        {{
-          hasNavigationApi
-            ? 'window.navigation exists — the router can use platform navigation.'
-            : 'window.navigation is missing — use a Chromium browser for this demo.'
-        }}
-      </span>
+      </dd>
     </div>
-  </section>
+  </dl>
+</header>
 
+<main class="demo">
   <section class="steps">
-    <h2>Demo steps</h2>
+    <h2>Scroll-restoration + live-reload gotcha</h2>
+    <p>
+      With <code>withExperimentalPlatformNavigation()</code> the router hands scroll and focus
+      restoration to the browser's native Navigation API instead of Angular's
+      <code>withInMemoryScrolling</code>. When the dev server live-reloads (a full page reload),
+      the browser tries to restore your scroll position before Angular has re-rendered this tall
+      content — so the position it lands on differs from the plain History-API build.
+    </p>
     <ol>
-      <li>
-        Run <code>npm start</code> (<code>ng serve --live-reload=true</code>) and open
-        <code>http://localhost:4200</code>.
-      </li>
+      <li>Run <code>npm start</code> and open <code>http://localhost:4200</code> in Chromium.</li>
+      <li>Scroll down to one of the bands below and note the <strong>Scroll Y</strong> readout.</li>
       <li>
         Edit <code>DEMO_MARKER</code> in <code>src/app/app.ts</code> (e.g. <code>'v1'</code> →
-        <code>'v2'</code>) and save — watch whether the marker and bootstrap time above update.
+        <code>'v2'</code>) and save to trigger a live-reload. Watch where the page lands and
+        whether <strong>Bootstrapped at</strong> changed.
       </li>
       <li>
         Comment out <code>withExperimentalPlatformNavigation()</code> in
-        <code>src/app/app.config.ts</code>, do a manual full reload, then repeat step 2 and
-        compare.
+        <code>src/app/app.config.ts</code>, repeat, and compare the scroll behavior.
       </li>
     </ol>
   </section>
+
+  @for (n of sections; track n) {
+    <section class="band" [attr.data-band]="n">
+      <span class="band-index">Band {{ n }}</span>
+      <span class="band-depth">≈ {{ n * 600 }}px deep</span>
+    </section>
+  }
 </main>
 
 <router-outlet />
