@@ -1,5 +1,9 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+// EDIT THIS during the demo (e.g. 'v1' -> 'v2') to trigger a rebuild
+const DEMO_MARKER = 'v1';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
@@ -8,6 +12,10 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('dmeo-livereload-repro');
+
+  protected readonly demoMarker = DEMO_MARKER;
+  protected readonly bootstrappedAt = new Date().toLocaleTimeString();
+  protected readonly hasNavigationApi = 'navigation' in window;
 
   constructor() {
     // ============================================================================

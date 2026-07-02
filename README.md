@@ -2,6 +2,14 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.1.
 
+## Live demo steps
+
+Demo of the live-reload behavior with `withExperimentalPlatformNavigation`:
+
+1. Run `npm start` (`ng serve --live-reload=true`) and open `http://localhost:4200` in a Chromium browser (the Navigation API is Chromium-only).
+2. Edit `DEMO_MARKER` in `src/app/app.ts` (e.g. `'v1'` → `'v2'`) and save — the page shows the marker and the bootstrap time, so you can see whether live-reload actually reloaded the app.
+3. Comment out `withExperimentalPlatformNavigation()` in `src/app/app.config.ts`, reload the page manually, then repeat step 2 and compare.
+
 ## Development server
 
 To start a local development server, run:
